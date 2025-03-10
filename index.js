@@ -15,5 +15,7 @@ app.use("/api/leave", authenticate, leave_router);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  connectdb(process.env.MONGO_URI);
+  connectdb(process.env.MONGO_URI).then(() => {
+    console.log(`Server is running on port ${PORT}`);
+  });
 });

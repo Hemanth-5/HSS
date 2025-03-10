@@ -6,17 +6,18 @@ dotenv.config();
 
 // 🔹 FETCH LEAVE DETAILS FROM HOSTEL API
 const fetchLeaveDetails = async (req, res) => {
+  if (!req.user) {
+    return res.status(401).json({ message: "Unauthorized access" });
+  }
+  if (!req.hss) {
+    return res.status(401).json({ message: "Unauthorized HSS access" });
+  }
+
   try {
-    const accessToken = req.headers.authorization;
-    console.log("🔹 Access Token:", accessToken);
-
-    if (!accessToken) {
-      return res.status(401).json({ message: "Access Token is required!" });
-    }
-
+    const hssToken = req.hss;
     const response = await fetch(process.env.LEAVE_STATUS_URL, {
       method: "GET",
-      headers: { Authorization: `Bearer ${accessToken}` },
+      headers: { Authorization: `Bearer ${hssToken}` },
     });
 
     if (!response.ok) {

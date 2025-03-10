@@ -2,14 +2,20 @@ import jwt from "jsonwebtoken";
 
 export const authenticate = async (req, res, next) => {
   try {
-    const token = req.headers.authorization.split(" ")[1];
+    const accesstoken = req.headers.authorization.split(" ")[1];
 
-    if (!token) {
+    if (!accesstoken) {
       res.status(400).json({ message: "Invalid authentication" });
     }
+    const hssToken = req.headers.hss;
+    if (!hssToken) {
+      res.status(400).json({ message: "Invalid  HSS authentication" });
+    }
 
-    const decoded = jwt.verify(token, process.env.SECRET_KEY);
+    const decoded = jwt.verify(accesstoken, process.env.JWT_SECRET);
     req.user = decoded;
+    req.hss = hssToken;
+    console.log("User authenticated:", decoded);
     next();
   } catch (error) {
     if (error.name === "TokenExpiredError") {
