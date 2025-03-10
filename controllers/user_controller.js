@@ -53,6 +53,7 @@ export const loginUser = async (req, res) => {
     if (!hssToken) {
       return res.status(401).json({ message: "HSS Login Failed!" });
     }
+    
     // Generate JWT token
     const token = jwt.sign(
       { id: user._id, username: user.username },

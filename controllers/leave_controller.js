@@ -7,7 +7,8 @@ dotenv.config();
 // 🔹 FETCH LEAVE DETAILS FROM HOSTEL API
 const fetchLeaveDetails = async (req, res) => {
   try {
-    const { accessToken } = req.headers;
+    const accessToken = req.headers.authorization;
+    console.log("🔹 Access Token:", accessToken);
 
     if (!accessToken) {
       return res.status(401).json({ message: "Access Token is required!" });
@@ -30,6 +31,7 @@ const fetchLeaveDetails = async (req, res) => {
 
     // Save latest leave record in database
     const latestLeave = data[0]; // Get latest leave entry
+    console.log("Saving leave data for:", req.user.username, latestLeave);
     await saveLeaveData(req.user.username, latestLeave);
 
     res.status(200).json(latestLeave);
@@ -109,6 +111,7 @@ const saveLeaveData = async (username, leaveData) => {
       existingLeave.status = leaveData.Status;
       existingLeave.toDate = new Date(leaveData.To_Date); // Update new return date
       existingLeave.toTime = new Date(leaveData.To_Time); // Update new return time
+
       await existingLeave.save();
     } else {
       // 🔹 Insert new leave record
@@ -124,6 +127,7 @@ const saveLeaveData = async (username, leaveData) => {
         comments: leaveData.Comments || "",
       });
 
+      console.log("🔹 Saving new leave record:", newLeave);
       await newLeave.save();
     }
 

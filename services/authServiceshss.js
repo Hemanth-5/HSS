@@ -12,12 +12,17 @@ export const loginToHSS = async (username, password) => {
     };
 
     console.log(payload);
-    const response = await fetch(process.env.LOGIN_URL, {
+    const response = await fetch("http://hss.psgtech.ac.in/WebAPI/token", {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
+        Accept: "application/json, text/plain, /",
       },
-      body: JSON.stringify(payload),
+      body: new URLSearchParams({
+        grant_type: "password",
+        username: username,
+        password: password,
+      }),
     });
 
     console.log(response);
